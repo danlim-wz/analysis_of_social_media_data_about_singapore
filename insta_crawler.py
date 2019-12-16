@@ -2,7 +2,7 @@ from instaloader import Instaloader
 from time import sleep
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-from credentials import credentials
+from credentials import Credentials
 
 #import passwords
 credential = Credentials()
