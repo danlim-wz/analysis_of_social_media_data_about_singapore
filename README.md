@@ -1,6 +1,6 @@
 # --In Progess-- Analysis of Social Media Data about Singapore
 
-Singapore is a multi-racial and multi-cultural society with 4 main languages. This repository documents the journey to derive insights from textual social media data about Singapore, from *Twitter* and *Instagram*, with the following potential areas of exploration:
+Singapore is a multi-racial and multi-cultural society with 4 main languages. This repository documents the journey to derive insights from textual social media data, from *Twitter* and *Instagram*, about Singapore with the following potential areas of exploration:
 
 1) Trending topics
 
@@ -11,7 +11,7 @@ Singapore is a multi-racial and multi-cultural society with 4 main languages. Th
 4) Proportion of languages used
 
 
-As no datasets on social media data about Singapore are publicly available, data will be mined from the aforementioned social media platforms using AWS before being used for analysis. This project will be segmented into 4 parts:
+As no datasets on social media data about Singapore are publicly available, data will be mined from the aforementioned social media platforms using AWS before being used for analysis. As such, this project will be segmented into 4 parts:
 
 1) Data mining using AWS
 
