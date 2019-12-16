@@ -2,10 +2,12 @@ from instaloader import Instaloader
 from time import sleep
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from credentials import credentials
 
+#import passwords
+credential = Credentials()
 
-engine = create_engine('postgresql://postgres:postgres@database-1.cryka5ljbuns.ap-southeast-1.rds.amazonaws.com:5432/postgres')
-# engine = create_engine('postgresql://postgres:postgres@localhost/postgres') 
+engine = create_engine(credential.psql_endpoint)
 
 metadata = MetaData()
 insta = Table('instagram_captions', metadata,
