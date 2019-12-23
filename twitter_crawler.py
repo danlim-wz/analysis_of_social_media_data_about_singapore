@@ -68,7 +68,8 @@ class MyStreamListener(tw.StreamListener):
             pass
 
 if __name__=='__main__':
-    myStreamListener = MyStreamListener()
-    myStream = tw.Stream(auth = api.auth, listener=myStreamListener)
-    myStream.filter(track=['singapore'])
+    while True:
+        myStreamListener = MyStreamListener()
+        myStream = tw.Stream(auth = api.auth, listener=myStreamListener)
+        myStream.filter(track=['singapore'])
 

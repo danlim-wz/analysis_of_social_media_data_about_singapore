@@ -13,21 +13,23 @@ import boto3
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #tunable parameters
-MAX_LEN = 128
-batch_size = 8
+MAX_LEN = 32
+batch_size = 16
 epochs = 4
 learning_rate = 2e-5
 
 #tokenizer and model objects
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
-model = nn.DataParallel(model)
+tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
+model = BertForSequenceClassification.from_pretrained('bert-base-multilingual-cased', num_labels=2)
+if torch.cuda.device_count() > 1:
+    model = nn.DataParallel(model)
 model.eval().to(device)
 # model.to(device)
 
 #import data
 print('Importing data')
-data = pd.read_csv('s3://s3-bucket-for-twitter-analysis/filtered_tweets.csv',header=None)
+data = pd.read_csv('/home/daniel/Desktop/social_media_data/training_tweets/filtered_tweets_1_6m.csv',header=None)
+# data = pd.read_csv('s3://s3-bucket-for-twitter-analysis/training/filtered_tweets_1_6m.csv',header=None)
 data = sklearn.utils.shuffle(data)
 tweets = list(data[data.columns[0]])
 labels = data[data.columns[1]]
@@ -60,11 +62,11 @@ class Iterate_Dataset(IterableDataset):
             mask[mask>0] = 1
             yield words[0], mask[0], l
 
-    def get_stream(self, data, labels):
-        return self.process_data(data, labels)
+    # def get_stream(self, data, labels):
+    #     return self.process_data(data, labels)
 
     def __iter__(self):
-        return self.get_stream(self.data, self.labels)
+        return self.process_data(self.data, self.labels)
 
 
 tloader = Iterate_Dataset(train_data,train_label)
@@ -85,6 +87,7 @@ for k in trange(epochs, desc="Epoch"):
     model.train()
     tr_loss = 0
     tr_steps = 0
+
     #train loop
     print('training on epoch %d'%k)
     for step, batch in enumerate(tqdm(train_dataloader)):
@@ -118,7 +121,7 @@ for k in trange(epochs, desc="Epoch"):
     print("Validation Accuracy: {}".format(val_acc/val_steps))
     if val_acc > best_val_acc:
         best_val_acc = val_acc
-        torch.save(model.state_dict(),'/home/daniel/Desktop/bert.pth')
+        torch.save(model.state_dict(),'sentiment_1_6m.pth')
     # torch.save(model, '/home/daniel/Desktop/bert.pth')
-boto3.Session().resource('s3').Bucket('s3-bucket-for-twitter-analysis').Object('bert.pth').upload_file('bert.pth')
+boto3.Session().resource('s3').Bucket('s3-bucket-for-twitter-analysis').Object('bert.pth').upload_file('/models/sentiment_1_6m.pth')
 
