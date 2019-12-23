@@ -49,9 +49,9 @@ The *Tweepy* wrapper that modularizes the twitter API will be used to further si
 pip install tweepy
 ``` 
 
-For Instagram, we will be mining the captions of posts related to Singapore. Scrapping data via the HTML way will allow us to mine more data as well as avoid having to use the Instagram API. However, they are very good at detecting mining bots and may excercising rate-limiting based on the IP address of the ec2 instance.
+For Instagram, we will be mining the captions of posts related to Singapore. Scrapping data via the HTML way will allow us to mine more data as well as avoid having to use the Instagram API. However, they are very good at detecting mining bots and may excercise rate-limiting based on the IP address of the ec2 instance.
 
-The *Instaloader* wrapper is an awesome, well documented library that like Tweepy, modularizes mining functions, making it really simple for us to mining data from instagram. Do check them out: https://github.com/instaloader/instaloader
+The *Instaloader* wrapper is an awesome, well documented library that like Tweepy, modularizes mining functions, making it really simple for us to mine data from instagram. Do check them out: https://github.com/instaloader/instaloader
 
 ```
 pip install instaloader
@@ -84,5 +84,5 @@ SELECT COUNT(id) from instagram_captions;
 
 ![](images/db.png)
 
-Due to rate limiting, it may take quite long to mine a sizable amount of text data. It took around 2 weeks to mine a million tweets.
+Due to rate limiting, it may take some time to mine a sizable amount of text data. It took around 2 weeks to mine a million tweets.
  
