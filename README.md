@@ -2,13 +2,13 @@
 
 Singapore is a multi-racial and multi-cultural society with 4 main languages. This repository documents the journey to derive insights from textual social media data, from *Twitter* and *Instagram*, about Singapore with the following potential areas of exploration:
 
-1) Trending topics
+1) Proportion of languages used
 
-2) Sentiment Analysis on trending topics as well as internal vs external data
+2) Trending topics
 
-3) Named-Entity Recognition
+3) Sentiment Analysis on trending topics as well as internal vs external data
 
-4) Proportion of languages used
+4) Named-Entity Recognition 
 
 
 As no datasets on social media data about Singapore are publicly available, data will be mined from the aforementioned social media platforms using AWS before being used for analysis. As such, this project will be segmented into 4 parts:
@@ -17,7 +17,7 @@ As no datasets on social media data about Singapore are publicly available, data
 
 2) Data cleaning & labelling using NLTK and spaCy
 
-3) Building/Training of various AI Models
+3) Building/Training/Usage of various AI Models
 
 4) Extraction and visualization of results
 
@@ -84,6 +84,48 @@ SELECT COUNT(id) from instagram_captions;
 
 ![](images/db.png)
 
-Due to rate limiting, it may take some time to mine a sizable amount of text data. It took around 2 weeks to mine a million tweets.
+Due to rate limiting, it may take some time to mine a sizable amount of text data. It took around 2 weeks to mine a million tweets. Additionally, a column indicating if the tweet is a retweet or not is saved. As duplicates are allowed, saving the retweet label as a binary count was chosen instead of the actual count. This is because the actual count may lead to unproportional emphasis on the retweet if numbers reflected are high.
 
-# --Other parts in progress--
+# Data Cleaning
+
+Data cleaning is probablity the most important part of the whole process as the model only performs as well as the quality of the data you feed it.
+
+A brief glimpse into the dataset shows that it contains a lot of noise, we will hence clean it based on these conditions:
+
+1) Punctuation - These markers are mostly neutral and does not significantly influence any language tasks.
+2) Website links - Useless based on the objectives defined above.
+3) Mentioned usernames - Useless based on the objectives defined above.
+4) Emoticons - This is a special case: it is not useful when doing tasks like language recognition but may be useful in sentiment analysis.
+5) Stop words - Holds little meaning as it serves to structure the sentence. However, it depends on the model used: if the model contextualizes the sentence, it can prove to be useful.
+
+The first three conditions will be done in all cases but conditions 4 and 5 may or may not be done based on the nature of the employed model.
+
+The first three conditions can be easily done in python with an array and iteration through each tweet on the character level(refer to *filter_tweets.py*). Although emoticons can be removed the same way, new emoticons are being created everyday. It is best to use a library that constantly updates their list of reference emoticons to ensure high quality filtering of emoticons:
+```
+pip install demoji
+```
+
+**--Other parts in progress--**
+
+# Proportion of languages used
+
+We begin our analysis by determining the spread of languages used. As most models are only compatible with english, this can help us understand what kind of data we will need in order to build a multilingual model. To first build a language recognition model, we can train it in an unsupervised manner by concatenating different datasets of different languages and train it with labels given based on it's language. However, this will prove to be an arduous task as massive datasets would be needed to account for the languages supported and a large corresponding vocabulary. Fortunately, the research team at *Facebook* have open sourced their language detection model: fastText.
+
+Install the python version of fastText:
+```
+pip install fasttext
+```
+
+Head to this link to download their model that supports an extensive 176 languages: https://fasttext.cc/docs/en/language-identification.html
+
+Subsequently, we use a hash table to count the occurrences of detected languages. We then sort the hash table and visualize the top 20 languages based on our mined dataset before visualizing it using matplot. Refer to *language_visualization.py* for the script used. The obtained bar chart is displayed below:
+
+![](images/languages.png)
+
+From our results, it is surprising to see Japanese as the second most used language.
+
+**--Other parts in progress--**
+
+
+
+
