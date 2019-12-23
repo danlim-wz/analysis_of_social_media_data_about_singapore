@@ -1,4 +1,4 @@
-# --In Progess-- Analysis of Social Media Data about Singapore
+# Analysis of Social Media Data about Singapore
 
 Singapore is a multi-racial and multi-cultural society with 4 main languages. This repository documents the journey to derive insights from textual social media data, from *Twitter* and *Instagram*, about Singapore with the following potential areas of exploration:
 
@@ -85,4 +85,5 @@ SELECT COUNT(id) from instagram_captions;
 ![](images/db.png)
 
 Due to rate limiting, it may take some time to mine a sizable amount of text data. It took around 2 weeks to mine a million tweets.
- 
+
+# --Other parts in progress--
