@@ -118,9 +118,9 @@ pip install fasttext
 
 Head to this link to download their model that supports an extensive 176 languages: https://fasttext.cc/docs/en/language-identification.html
 
-Subsequently, we use a hash table to count the occurrences of detected languages. We then sort the hash table and visualize the top 20 languages based on our mined dataset before visualizing it using matplot. Refer to *language_visualization.py* for the script used. The obtained bar chart is displayed below:
+Subsequently, we use a hash table to count the occurrences of detected languages. We then sort the hash table and visualize the top 20 languages tweeted based on our mined dataset using matplot. Refer to *language_visualization.py* for the script used. The obtained bar chart is displayed below:
 
-![](images/languages.png)
+![](images/language.png)
 
 From our results, it is surprising to see Japanese as the second most used language.
 
