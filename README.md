@@ -124,6 +124,60 @@ Subsequently, we use a hash table to count the occurrences of detected languages
 
 From our results, it is surprising to see Japanese as the second most used language.
 
+# Sentiment Analysis on English tweets
+
+Subsequently, we can use the earlier results to extract the english tweets related to Singapore. All english tweets which reflect a confidence of more than 0.5 will be used.
+
+The model we will be using is BERT, which was developed by the Google AI research team. This is the current state-of-the-art model due to it's novel architecture that uses bi-directional LSTMs, allowing for contextualization of sentences in both directions as compared to it's predecessors, exceeding prior benchmarks in a series of NLP tasks. Read the paper here: https://arxiv.org/abs/1810.04805
+
+We will be using a pytorch based version as compiled by the awesome NLP researches from *hugging face*, which allows for easy model creation due to it's modularity as well as additionally giving us access to other NLP models if we would like to explore in the future.
+```
+pip install pytorch-transformers
+```
+
+As BERT was trained on the Wikipedia corpus, this may lead to inaccuracies for our task as the sentence structures that BERT was trained on defers from our more informal tweets. As such, we will be using transfer learning by fine-tuning BERT using the Sentiment140 dataset, which consists of 1.6 million evenly labels english tweets(postive/negative), that was used in research. 
+
+Dataset: https://www.kaggle.com/kazanova/sentiment140
+
+Research paper: *Go, A., Bhayani, R. and Huang, L., 2009. Twitter sentiment classification using distant supervision. CS224N Project Report, Stanford, 1(2009), p.12*
+
+As the dataset has already been cleaned and labelled for us, we can start building/training the model straight away. Please refer to *bert_training_script.py* in this repository for the code used to train BERT.
+
+When working with very large datasets, it does not make sense to load the whole dataset into memory due to the lack/wastage of computing resources. It is thus good to understand the usage of the *IterableDataset* class used from Pytorch. This enables concurrent reading/pre-processing and training of the model at the same time, via the CPU and GPU working in tandem, ensuring that only a fraction of data is in memory at any given time, greatly saving computational resources.
+
+Bert is a large model by itself which means that we probably will take a very long time with a mediocre GPU instance. As such, we will also be training BERT on multiple GPU instances on AWS SageMaker, which is a managed machine learning platform that makes it very easy for development/training and testing of AI models. The good thing about SageMaker it is very fast and easy to create jupyter notebooks to host your models and they only bill you for the exact time you take run the instance, unlike EC2 where there are hidden costs and it is harder to start/stop your resources. However, multi-GPU instances are very expensive and you should visit this link to be aware of the charges before proceeding: https://aws.amazon.com/sagemaker/pricing/
+
+It is a good practice to ensure the training script can run locally on your computer become starting the instance to get the most out of your instance.
+
+Head to SageMaker and create a new notebook instance. I created one in the North Virgina region as it was the cheapest. You can change your region in the top right corner:
+
+![](images/change_region.png)
+
+We will be choosing the ml.p3.16xlarge instance which consists of 8xV100 GPUs, this will cut down training time from a day on a regular GPU to just 50 mins for our given dataset of 1.6 million samples. GPU types/quantities per instances are available at the same pricing link above. Please note that if you are saving the model straight into an AWS S3 bucket as per the approach map at the start of this repository, you would need give permissions to the S3 bucket when initializing the instance, or you can select and use a role which has access to S3. 
+
+![](images/multi_gpu.png)
+
+Your resources may take a while to provision. Once done, launch the notebook and copy the code from *bert_training_script.py* in the jupyter. Alternatively, you can launch the script via the command line in your SageMaker instance.
+
+![](images/jupyter.png)
+
+The code in the script has been edited to be compatible to train on mulitple GPUs using the DataParallel class from Pytorch. Head to this link if you wish to learn more about it: https://pytorch.org/tutorials/beginner/former_torchies/parallelism_tutorial.html
+
+Adjust the tunable parameters in the code to make the most use of the GPU resources. Using a hash table, we can determine the optimal length to use, in this case, we will be using a MAX_LEN of 32 as more than 95% of tweets are encompasses within 32 words:
+ 
+![](images/tweet_length.png)
+
+It may also be helpful to query *nvidia-smi* on the terminal to achieve the highest possible batch size. If you are also using the ml.p3.16xlarge instance, a good batch size is 2624. This maximizes all GPUs almost evenly:
+
+![](images/gpu_training.png)
+
+After training of 4 epochs, we achieve an test accuracy of **84.8%**. We then use this to predict the sentiment of the english tweets we mined, results are displayed in the chart below (0 means negative while 1 means positive):
+
+![](images/sentiment_polarity.png)
+
+The mean sentiment scores computed was **0.534**, meaning the average sentiment of all english tweets were largely neutral but with a minute positive nature. Future updates will explore the validity of this score as well as topic-wise/multi-lingual sentiment analysis.
+
+
 **--Other parts in progress--**
 
 
