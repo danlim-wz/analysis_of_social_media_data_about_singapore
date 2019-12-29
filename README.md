@@ -143,7 +143,7 @@ Research paper: *Go, A., Bhayani, R. and Huang, L., 2009. Twitter sentiment clas
 
 As the dataset has already been cleaned and labelled for us, we can start building/training the model straight away. Please refer to *bert_training_script.py* in this repository for the code used to train BERT.
 
-When working with very large datasets, it does not make sense to load the whole dataset into memory due to the lack/wastage of computing resources. It is thus good to understand the usage of the *IterableDataset* class used from Pytorch. This enables concurrent reading/pre-processing and training of the model at the same time, via the CPU and GPU working in tandem, ensuring that only a fraction of data is in memory at any given time, greatly saving computational resources.
+When working with very large datasets, it does not make sense to load the whole dataset into memory due to the lack/wastage of computing resources. It is thus good to understand the usage of the *IterableDataset* class used from Pytorch. This enables concurrent reading/pre-processing of data and training of the model, via the CPU and GPU working in tandem, ensuring that only a fraction of data is in memory at any given time, greatly saving computational resources.
 
 Bert is a large model by itself which means that we probably will take a very long time with a mediocre GPU instance. As such, we will also be training BERT on multiple GPU instances on AWS SageMaker, which is a managed machine learning platform that makes it very easy for development/training and testing of AI models. The good thing about SageMaker it is very fast and easy to create jupyter notebooks to host your models and they only bill you for the exact time you take run the instance, unlike EC2 where there are hidden costs and it is harder to start/stop your resources. However, multi-GPU instances are very expensive and you should visit this link to be aware of the charges before proceeding: https://aws.amazon.com/sagemaker/pricing/
 
@@ -157,7 +157,7 @@ We will be choosing the ml.p3.16xlarge instance which consists of 8xV100 GPUs, t
 
 ![](images/multi_gpu.png)
 
-Your resources may take a while to provision. Once done, launch the notebook and copy the code from *bert_training_script.py* in the jupyter. Alternatively, you can launch the script via the command line in your SageMaker instance.
+Your resources may take a while to provision. Once done, launch the notebook and copy the code from *bert_training_script.py* into jupyter. Alternatively, you can launch the script via the command line in your SageMaker instance.
 
 ![](images/jupyter.png)
 
@@ -171,11 +171,11 @@ It may also be helpful to query *nvidia-smi* on the terminal to achieve the high
 
 ![](images/gpu_training.png)
 
-After training of 4 epochs, we achieve an test accuracy of **84.8%**. We then use this to predict the sentiment of the english tweets we mined, results are displayed in the chart below (0 means negative while 1 means positive):
+After training for 4 epochs, we achieve an test accuracy of **84.8%**. We then use this to predict the sentiment of the english tweets we mined, results are displayed in the chart below (0 means negative while 1 means positive):
 
 ![](images/sentiment_polarity.png)
 
-The mean sentiment scores computed was **0.534**, meaning the average sentiment of all english tweets were largely neutral but with a minute positive nature. Future updates will explore the validity of this score as well as topic-wise/multi-lingual sentiment analysis.
+The mean sentiment scores computed was **0.534**, meaning the average sentiment of all english tweets were largely neutral but with a minute positive nature. Future updates will explore the validity of this score as well as topic-wise/multi-lingual sentiment analysis, to incorporate a more holistic approach towards drawing insights on tweets about Singapore.
 
 
 **--Other parts in progress--**
